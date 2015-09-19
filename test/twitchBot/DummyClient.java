@@ -1,5 +1,7 @@
 package twitchBot;
 
+import utilities.RandomString;
+
 public class DummyClient extends IrcClient{
 
 	static final int nameLength = 10;

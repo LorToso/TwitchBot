@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 
 public class TestTwitchBot {
 	static String ircServerPath = "ircServer//";

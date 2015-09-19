@@ -1,4 +1,4 @@
-package twitchBot;
+package utilities;
 
 import java.util.Random;
 
@@ -29,5 +29,8 @@ public class RandomString {
 	    for (int idx = 0; idx < buf.length; ++idx) 
 	      buf[idx] = symbols[random.nextInt(symbols.length)];
 	    return new String(buf);
+	  }
+	  public String toString(){
+		  return nextString();
 	  }
 	}
