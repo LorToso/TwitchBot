@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestTwitchBot {
-	static String ircServerPath = "C:\\Users\\Viaggatore\\Desktop\\Lorenzo\\Git\\Unreal3.2\\";
+	static String ircServerPath = "ircServer//";
 	static String ircServerExecutable = "wircd.exe";
 	
 	static String address = "localhost";
