@@ -1,9 +1,8 @@
 package twitchBot;
 
-import org.jibble.pircbot.PircBot;
 
-public class TwitchBot extends PircBot{
-
+public class TwitchBot extends IrcClient{
+	
 	public TwitchBot(String username) {
 		this.setName(username);
 		this.setLogin(username);
@@ -17,10 +16,11 @@ public class TwitchBot extends PircBot{
 	protected void onMessage(String channel, String sender, String login, String hostname, String message)
 	{
 		System.out.println(sender + ": " + message);
+		super.onMessage(channel, sender, login, hostname, message);
 	}
 	protected void onServerResponse(int code, String response)
 	{
-		System.out.println("Server response: " + code + ": " + response);
+		//System.out.println("Server response: " + code + ": " + response);
 	}
 	protected void onJoin(String channel, String sender, String login, String hostname)
 	{

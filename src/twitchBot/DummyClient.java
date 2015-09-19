@@ -1,8 +1,6 @@
 package twitchBot;
 
-import org.jibble.pircbot.PircBot;
-
-public class DummyClient extends PircBot {
+public class DummyClient extends IrcClient{
 
 	static final int nameLength = 10;
 	
@@ -16,8 +14,6 @@ public class DummyClient extends PircBot {
 	{
 		RandomString random = new RandomString(nameLength);
 		String name = "bot_" + random.nextString();
-		
-		
 		return name;
 	}
 }

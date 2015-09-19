@@ -4,12 +4,16 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 public class TestTwitchBot {
 	static String ircServerPath = "ircServer//";
@@ -23,6 +27,10 @@ public class TestTwitchBot {
 	static TwitchBot twitchbot;
 	static Process ircServer;
 	
+	@Rule
+	public TestWatcher watchman= new TwitchTestWatcher();
+	
+	
 	@BeforeClass
 	public static void onlyOnce() throws IOException, InterruptedException
 	{		
@@ -32,7 +40,7 @@ public class TestTwitchBot {
 	public static DummyClient addUser() throws NickAlreadyInUseException, IOException, IrcException
 	{
 		DummyClient user = new DummyClient();
-		user.connect(address);
+		connectToServer(user);
 		return user;
 	}
 	private static void startIRCServer() throws IOException, InterruptedException
@@ -46,16 +54,30 @@ public class TestTwitchBot {
 	
 	@Test
 	public void connectToServer() throws NickAlreadyInUseException,  IrcException, IOException {
-		twitchbot.connect(address, port, pw);
+		try{
+			connectToServer(twitchbot);
+		}
+		catch(Exception e)
+		{
+			throw e;
+		}finally
+		{
+			disconnectFromServer(twitchbot);
+		}
 	}
 
 	@Test
 	public void connectToNotExistingServer() throws NickAlreadyInUseException,  IrcException {
 		try{
 			twitchbot.connect("randomServer", port, pw);
+			twitchbot.joinChannel(channel);
 		}
 		catch(IOException ex){
 			return;
+		}
+		finally
+		{
+			disconnectFromServer(twitchbot);
 		}
 		fail("Successfully connected to not existing server.");
 	} 
@@ -74,31 +96,96 @@ public class TestTwitchBot {
 	@Test
 	public void validateDummyClientName() throws Exception
 	{
+		final int dummyCount = 5;
+		
+		ArrayList<DummyClient> list = new ArrayList<>();
 		try {
-			for(int i=0; i < 20; i++)
+			for(int i=0; i < dummyCount; i++)
 			{
-				addUser();	
-				System.out.println(i);
-				Thread.sleep(500);
+				list.add(addUser());	
 			}
 		} catch (IOException | IrcException e) {
 			e.printStackTrace();
 			throw e;
 		}
+		
+		for(DummyClient dummy : list)
+			dummy.disconnect();
 	}
 	
 	@Test
-	public void sendMessage()
+	public void sendMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
-		twitchbot.sendMessage(channel, "test message");
-	}
+		final String testmessage = "test message";
+		
+		DummyClient dummy = addUser();
+		TestMessagable m = new TestMessagable(twitchbot.getLogin(), testmessage);
+		dummy.addMessagee(m);
+
+		connectToServer(twitchbot);
+		
+		twitchbot.sendMessage(channel, testmessage);
+		Thread.sleep(2000);
+		
+		disconnectFromServer(twitchbot);
+		disconnectFromServer(dummy);
+		
+		assertTrue(m.success);
+	}	
+	
 	@Test
-	public void receiveMessage() throws NickAlreadyInUseException, IOException, IrcException
+	public void sendWrongMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
-		return;
-		//DummyClient user =  addUser();
-		//user.sendMessage(channel, "test message");
-		//TODO
+		final String testmessage1 = "test message1";
+		final String testmessage2 = "test message2";
+		
+		DummyClient dummy = addUser();
+		TestMessagable m = new TestMessagable(twitchbot.getLogin(), testmessage1);
+		dummy.addMessagee(m);
+
+		connectToServer(twitchbot);
+		
+		twitchbot.sendMessage(channel, testmessage2);
+		
+		Thread.sleep(2000);
+
+		disconnectFromServer(twitchbot);
+		disconnectFromServer(dummy);
+		
+		assertFalse(m.success);
+	}
+	
+	
+	@Test
+	public void receiveMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	{
+		final String testmessage = "test message";
+		
+		connectToServer(twitchbot);
+		DummyClient user =  addUser();
+
+		TestMessagable m = new TestMessagable(user.getLogin(), testmessage);
+		twitchbot.addMessagee(m);
+				
+		user.sendMessage(channel, testmessage);
+
+		Thread.sleep(3000);
+		
+		twitchbot.removeMessagee(m);
+		disconnectFromServer(twitchbot);
+		disconnectFromServer(user);
+
+		assertTrue(m.success);
+	}
+	
+	private static void connectToServer(IrcClient client) throws NickAlreadyInUseException, IOException, IrcException
+	{
+		client.connect(address);
+		client.joinChannel(channel);
+	}
+	private static void disconnectFromServer(IrcClient client)
+	{
+		client.disconnect();
 	}
 	
 	@AfterClass
