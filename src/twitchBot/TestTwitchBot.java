@@ -29,21 +29,10 @@ public class TestTwitchBot {
 		startIRCServer();
 		twitchbot = new TwitchBot(username);
 	}
-	public static DummyClient addUser()
+	public static DummyClient addUser() throws NickAlreadyInUseException, IOException, IrcException
 	{
 		DummyClient user = new DummyClient();
-		try {
-			user.connect(address);
-		} catch (NickAlreadyInUseException e) {
-			System.err.println("Nick " + user.getName() + " already in use.");
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (IrcException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		}
+		user.connect(address);
 		return user;
 	}
 	private static void startIRCServer() throws IOException, InterruptedException
@@ -56,13 +45,8 @@ public class TestTwitchBot {
 	}
 	
 	@Test
-	public void connectToServer() throws NickAlreadyInUseException,  IrcException {
-		try{
-			twitchbot.connect(address, port, pw);
-		}
-		catch(IOException ex){
-			fail("Unable to connect to the server");
-		}
+	public void connectToServer() throws NickAlreadyInUseException,  IrcException, IOException {
+		twitchbot.connect(address, port, pw);
 	}
 
 	@Test
@@ -76,6 +60,46 @@ public class TestTwitchBot {
 		fail("Successfully connected to not existing server.");
 	} 
 
+	@Test
+	public void addRandomUser()
+	{
+		try {
+			addUser();
+		} catch (IOException | IrcException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void validateDummyClientName() throws Exception
+	{
+		try {
+			for(int i=0; i < 20; i++)
+			{
+				addUser();	
+				System.out.println(i);
+				Thread.sleep(500);
+			}
+		} catch (IOException | IrcException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	@Test
+	public void sendMessage()
+	{
+		twitchbot.sendMessage(channel, "test message");
+	}
+	@Test
+	public void receiveMessage() throws NickAlreadyInUseException, IOException, IrcException
+	{
+		return;
+		//DummyClient user =  addUser();
+		//user.sendMessage(channel, "test message");
+		//TODO
+	}
 	
 	@AfterClass
 	public static void after()
