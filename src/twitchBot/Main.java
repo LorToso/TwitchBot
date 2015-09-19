@@ -15,8 +15,8 @@ public class Main {
     	String channel = "#test";
     	
     	TwitchBot twitchbot = new TwitchBot(username);
-    	twitchbot.setVerbose(true);
-    	twitchbot.connect(address, port, pw);
-    	twitchbot.joinChannel(channel);
+    	//twitchbot.setVerbose(true);
+    	//twitchbot.connect(address, port, pw);
+    	//twitchbot.joinChannel(channel);
     }
 }

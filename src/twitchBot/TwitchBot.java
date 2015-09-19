@@ -1,33 +1,39 @@
 package twitchBot;
 
+import irc.IrcClient;
+import messages.Join;
+import messages.JoinListener;
+import messages.Message;
+import messages.MessageListener;
+import messages.Notice;
+import messages.NoticeListener;
 
-public class TwitchBot extends IrcClient{
+public class TwitchBot implements JoinListener, MessageListener, NoticeListener{
+	IrcClient ircClient;
 	
 	public TwitchBot(String username) {
-		this.setName(username);
-		this.setLogin(username);
-		
+		ircClient = new IrcClient(username);
+		ircClient.addJoinListener(this);
+		ircClient.addNoticeListener(this);
+		ircClient.addMessageListener(this);	
 	}
-	
-	protected void onConnect()
+	public void onMessage(Message message)
 	{
-		System.out.println("Successfully connected.");
+		System.out.println(message);
 	}
-	protected void onMessage(String channel, String sender, String login, String hostname, String message)
+	public void onJoin(Join join)
 	{
-		System.out.println(sender + ": " + message);
-		super.onMessage(channel, sender, login, hostname, message);
+		System.out.println(join);
 	}
-	protected void onServerResponse(int code, String response)
+	public void onNotice(Notice notice)
 	{
-		//System.out.println("Server response: " + code + ": " + response);
+		System.out.println(notice);
 	}
-	protected void onJoin(String channel, String sender, String login, String hostname)
+	public void connect()
 	{
-		System.out.println("onJoin");
 	}
-	protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice)
+	public void disconnect()
 	{
-		System.out.println("onNotice: " + notice);
+		ircClient.disconnect();
 	}
 }

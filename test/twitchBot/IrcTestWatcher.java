@@ -3,7 +3,7 @@ package twitchBot;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-public class TwitchTestWatcher extends TestWatcher{
+public class IrcTestWatcher extends TestWatcher{
 	@Override
 	protected void failed(Throwable e, Description description) {
 		sleep();
