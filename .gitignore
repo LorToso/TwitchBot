@@ -16,3 +16,4 @@ ircServer/
 ircServer/ircd.tune
 *.tune
 *.lnk
+testLog.log
