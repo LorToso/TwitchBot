@@ -3,7 +3,7 @@ package irc;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-public class IrcTestWatcher extends TestWatcher{
+public class IrcClientTestWatcher extends TestWatcher{
 	@Override
 	protected void failed(Throwable e, Description description) {
 		sleep();

@@ -25,7 +25,7 @@ public class TestIrcClient {
 	static IrcClient ircClient;
 	
 	@Rule
-	public TestWatcher watchman= new IrcTestWatcher();
+	public TestWatcher watchman= new IrcClientTestWatcher();
 	
 	
 	@BeforeClass
@@ -108,7 +108,7 @@ public class TestIrcClient {
 		final String testmessage = "test message";
 		
 		DummyClient dummy = addUser();
-		TestMessagable m = new TestMessagable(ircClient.getNick(), testmessage);
+		DummyMessagable m = new DummyMessagable(ircClient.getNick(), testmessage);
 		dummy.addMessageListener(m);
 
 		connectToServer(ircClient);
@@ -129,7 +129,7 @@ public class TestIrcClient {
 		final String testmessage2 = "test message2";
 		
 		DummyClient dummy = addUser();
-		TestMessagable m = new TestMessagable(ircClient.getNick(), testmessage1);
+		DummyMessagable m = new DummyMessagable(ircClient.getNick(), testmessage1);
 		dummy.addMessageListener(m);
 
 		connectToServer(ircClient);
@@ -153,7 +153,7 @@ public class TestIrcClient {
 		connectToServer(ircClient);
 		DummyClient user =  addUser();
 
-		TestMessagable m = new TestMessagable(user.getNick(), testmessage);
+		DummyMessagable m = new DummyMessagable(user.getNick(), testmessage);
 		ircClient.addMessageListener(m);
 				
 		user.sendMessage(channel, testmessage);

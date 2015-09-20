@@ -3,12 +3,12 @@ package irc;
 import irc.messages.Message;
 import irc.messages.MessageListener;
 
-public class TestMessagable implements MessageListener{
+public class DummyMessagable implements MessageListener{
 	public boolean success = false;
 	String expectedUser;
 	String expectedMessage;
 	
-	public TestMessagable(String user, String message) {
+	public DummyMessagable(String user, String message) {
 		this.expectedUser = user;
 		this.expectedMessage = message;
 	}
