@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.rules.TestWatcher;
 
 import irc.messages.Join;
+import irc.messages.Message;
 
 public class TestIrcLogger {
 	static File testLogFile = new File("testLog.log");
@@ -107,28 +108,116 @@ public class TestIrcLogger {
 	@Test
 	public void clientJoins() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
-		DummyClient dummy = new DummyClient();
-		dummy.connect(address);
-		dummy.joinChannel(channel);
+		DummyClient dummy = addDummy();
+		Join expectedJoin = generateJoin(dummy.getName()); 
 		
-		Thread.sleep(2000);
-		
-		Join expectedJoin = new Join();
-		expectedJoin.channel = channel;
-		expectedJoin.sender = dummy.getName(); 
-		
-		logger.flush();
-		
+		waitForLog();
+
 		List<String> fullFile = readCompleteLogFile();
 		assertTrue(fullFile.size() > 3);
 		assertEquals(expectedJoin.toString(),fullFile.get(3));
 		dummy.disconnect();
 	}
+
+	@Test
+	public void multipleClientJoin() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	{
+		DummyClient dummy1 = addDummy();
+		DummyClient dummy2 = addDummy();
+		
+		Join expectedJoin1 = generateJoin(dummy1.getName());
+		Join expectedJoin2 = generateJoin(dummy2.getName());
+		
+		waitForLog();
+		
+		List<String> fullFile = readCompleteLogFile();
+		assertTrue(fullFile.size() >= 5);
+		assertEquals(expectedJoin1.toString(),fullFile.get(3));
+		assertEquals(expectedJoin2.toString(),fullFile.get(4));
+		dummy1.disconnect();
+		dummy2.disconnect();
+	}	
 	
+	@Test
+	public void logMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	{
+		final String messageString = "test message";
+		
+		DummyClient dummy1 = addDummy();
+		dummy1.sendMessage(channel, messageString);
+		Message expectedMessage = generateMessage(dummy1.getName(), messageString);
+
+		waitForLog();
+		
+		List<String> fullFile = readCompleteLogFile();
+		assertTrue(fullFile.size() >= 5);
+		assertEquals(expectedMessage.toString(),fullFile.get(4));
+		dummy1.disconnect();
+	}
+	@Test
+	public void logMultipleMessages() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	{
+		final String messageString1 = "test message 1";
+		final String messageString2 = "test message 2";
+		final String messageString3 = "test message 3";
+		
+		DummyClient dummy1 = addDummy();
+		DummyClient dummy2 = addDummy();
+		dummy1.sendMessage(channel, messageString1);
+		dummy2.sendMessage(channel, messageString2);
+		dummy1.sendMessage(channel, messageString3);
+
+		Message expectedMessage1 = generateMessage(dummy1.getName(), messageString1);
+		Message expectedMessage2 = generateMessage(dummy2.getName(), messageString2);
+		Message expectedMessage3 = generateMessage(dummy1.getName(), messageString3);
+
+		waitForLog();
+		
+		List<String> fullFile = readCompleteLogFile();
+		assertEquals(expectedMessage1.toString(),fullFile.get(5));
+		assertEquals(expectedMessage2.toString(),fullFile.get(6));
+		assertEquals(expectedMessage3.toString(),fullFile.get(7));
+		dummy1.disconnect();
+		dummy2.disconnect();	
+	}
+	
+	
+	private Message generateMessage(String user, String message)
+	{
+		Message expectedMessage = new Message();
+		expectedMessage.channel = channel;
+		expectedMessage.message = message;
+		expectedMessage.sender = user;
+		return expectedMessage;
+	}
+	private Join generateJoin(String user)
+	{
+		Join expectedMessage = new Join();
+		expectedMessage.channel = channel;
+		expectedMessage.sender = user;
+		return expectedMessage;
+	}
+	
+	private DummyClient addDummy() throws NickAlreadyInUseException, IOException, IrcException
+	{
+		DummyClient dummy = new DummyClient();
+		dummy.connect(address);
+		dummy.joinChannel(channel);
+		return dummy;
+	}
+	private void waitForLog()
+	{
+		try {
+			Thread.sleep(2000);
+			logger.flush();
+		} catch (Exception e) {
+		}
+	}
 	
 	@AfterClass
 	public static void after()
 	{
 		IrcServer.stop();
+		testLogFile.delete();
 	}
 }
