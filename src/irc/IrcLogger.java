@@ -20,6 +20,7 @@ public class IrcLogger implements MessageListener, JoinListener, NoticeListener{
 	
 	public IrcLogger(File logFile, IrcClient ircClient)
 	{
+		this.ircClient = ircClient;
 		ircClient.addJoinListener(this);
 		ircClient.addMessageListener(this);
 		ircClient.addNoticeListener(this);
