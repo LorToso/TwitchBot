@@ -9,7 +9,7 @@ public class Notice  extends Entity{
 	
 	public String toString()
 	{
-		return notice;
+		return "Notice from " + source + " to " + target + ": " + notice;
 	}
 
 }

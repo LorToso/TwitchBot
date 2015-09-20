@@ -214,6 +214,19 @@ public class TestIrcLogger {
 		}
 	}
 	
+	@Test
+	public void logNotice() throws IOException
+	{
+		waitForLog();
+		List<String> fullFile = readCompleteLogFile();	
+		String notice1 = fullFile.get(0);
+		String notice2 = fullFile.get(1);
+
+		assertTrue(notice1.startsWith("Notice"));
+		assertTrue(notice2.startsWith("Notice"));
+	}
+	
+	
 	@AfterClass
 	public static void after()
 	{
