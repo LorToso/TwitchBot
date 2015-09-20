@@ -1,6 +1,6 @@
-package messages;
+package irc.messages;
 
-public class Join {
+public class Join extends Entity{
 	public String channel;
 	public String sender;
 	public long timestamp;

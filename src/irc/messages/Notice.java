@@ -1,6 +1,6 @@
-package messages;
+package irc.messages;
 
-public class Notice {
+public class Notice  extends Entity{
 
 	public String source;
 	public String target;

@@ -1,4 +1,4 @@
-package twitchBot;
+package irc;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;

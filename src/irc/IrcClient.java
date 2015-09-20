@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.jibble.pircbot.PircBot;
 
-import messages.Join;
-import messages.JoinListener;
-import messages.Message;
-import messages.MessageListener;
-import messages.Notice;
-import messages.NoticeListener;
+import irc.messages.Join;
+import irc.messages.JoinListener;
+import irc.messages.Message;
+import irc.messages.MessageListener;
+import irc.messages.Notice;
+import irc.messages.NoticeListener;
 
 public class IrcClient extends PircBot{
 	private List<MessageListener> 	messageListeners 	= new ArrayList<MessageListener>();
@@ -56,7 +56,7 @@ public class IrcClient extends PircBot{
 		packedMessage.timestamp = System.currentTimeMillis();
 
 		for(MessageListener m : messageListeners)
-			m.onMessage(packedMessage);
+			m.onEvent(packedMessage);
 	}	
 	final protected void onJoin(String channel, String sender, String login, String hostname)
 	{
@@ -66,7 +66,7 @@ public class IrcClient extends PircBot{
 		join.timestamp = System.currentTimeMillis();
 
 		for(JoinListener m : joinListeners)
-			m.onJoin(join);
+			m.onEvent(join);
 	}
 	final protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice)
 	{
@@ -77,6 +77,6 @@ public class IrcClient extends PircBot{
 		packedNotice.timestamp = System.currentTimeMillis();
 
 		for(NoticeListener m : noticeListeners)
-			m.onNotice(packedNotice);
+			m.onEvent(packedNotice);
 	}
 }

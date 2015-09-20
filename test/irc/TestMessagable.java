@@ -1,7 +1,7 @@
-package twitchBot;
+package irc;
 
-import messages.Message;
-import messages.MessageListener;
+import irc.messages.Message;
+import irc.messages.MessageListener;
 
 public class TestMessagable implements MessageListener{
 	public boolean success = false;
@@ -14,7 +14,7 @@ public class TestMessagable implements MessageListener{
 	}
 	
 	@Override
-	public void onMessage(Message message) {
+	public void onEvent(Message message) {
 		success = expectedUser.equals(message.sender) && expectedMessage.equals(message.message);
 	}
 }

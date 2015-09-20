@@ -1,4 +1,4 @@
-package twitchBot;
+package irc;
 
 import irc.IrcClient;
 import utilities.RandomString;

@@ -1,8 +1,7 @@
-package twitchBot;
+package irc;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,8 +16,6 @@ import org.junit.rules.TestWatcher;
 import irc.IrcClient;
 
 public class TestIrcClient {
-	static String ircServerPath = "ircServer//";
-	static String ircServerExecutable = "wircd.exe";
 	
 	static String address = "localhost";
 	static String username = "testuser1";
@@ -26,7 +23,6 @@ public class TestIrcClient {
 	static int port = 6667;
 	static String channel = "#test";
 	static IrcClient ircClient;
-	static Process ircServer;
 	
 	@Rule
 	public TestWatcher watchman= new IrcTestWatcher();
@@ -35,7 +31,7 @@ public class TestIrcClient {
 	@BeforeClass
 	public static void onlyOnce() throws IOException, InterruptedException
 	{		
-		startIRCServer();
+		IrcServer.start();
 		ircClient = new IrcClient(username);
 	}
 	public static DummyClient addUser() throws NickAlreadyInUseException, IOException, IrcException
@@ -43,14 +39,6 @@ public class TestIrcClient {
 		DummyClient user = new DummyClient();
 		connectToServer(user);
 		return user;
-	}
-	private static void startIRCServer() throws IOException, InterruptedException
-	{
-		ProcessBuilder builder = new ProcessBuilder(ircServerPath + ircServerExecutable);		
-		builder.directory(new File(ircServerPath));
-        builder.redirectErrorStream();
-		ircServer = builder.start();
-		Thread.sleep(2000);	
 	}
 	
 	@Test
@@ -192,6 +180,6 @@ public class TestIrcClient {
 	@AfterClass
 	public static void after()
 	{
-		ircServer.destroy();
+		IrcServer.stop();
 	}
 }
