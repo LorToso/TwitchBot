@@ -1,8 +1,11 @@
 package irc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
 
 import irc.messages.Join;
@@ -78,5 +81,10 @@ public class IrcClient extends PircBot{
 
 		for(NoticeListener m : noticeListeners)
 			m.onEvent(packedNotice);
+	}
+	public void connect(String address, String channel) throws NickAlreadyInUseException, IOException, IrcException
+	{
+		connect(address);
+		joinChannel(channel);
 	}
 }

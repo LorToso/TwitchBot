@@ -18,6 +18,8 @@ public class IrcLogger implements MessageListener, JoinListener, NoticeListener{
 	BufferedWriter bufferedWriter;
 	boolean isOpen = false;
 	
+	private final boolean logToStdout = true;
+	
 	public IrcLogger(File logFile, IrcClient ircClient)
 	{
 		this.ircClient = ircClient;
@@ -30,20 +32,27 @@ public class IrcLogger implements MessageListener, JoinListener, NoticeListener{
 
 	@Override
 	public void onEvent(Notice notice) {
-		writeStringToFile(notice.toString());
+		log(notice.toString());
 	}
 
 	@Override
 	public void onEvent(Join joiner) {
-		writeStringToFile(joiner.toString());
+		log(joiner.toString());
 		
 	}
 
 	@Override
 	public void onEvent(Message message) {
-		writeStringToFile(message.toString());
-		
+		log(message.toString());	
 	}
+	
+	private void log(String s)
+	{
+		writeStringToFile(s);
+		if(logToStdout)
+			System.out.println(s);
+	}
+	
 	public void writeStringToFile(String toWrite)
 	{
 		if(!isOpen)
@@ -80,6 +89,10 @@ public class IrcLogger implements MessageListener, JoinListener, NoticeListener{
 		ircClient.removeMessageListener(this);
 		ircClient.removeNoticeListener(this);
 		isOpen = false;
+	}
+	public void flush() throws IOException
+	{
+		bufferedWriter.flush();
 	}
 
 }

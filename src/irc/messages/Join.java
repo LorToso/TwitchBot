@@ -7,6 +7,14 @@ public class Join extends Entity{
 	
 	public String toString()
 	{
-		return sender + " added channel " + channel;
+		String def = getDefaultStringRepresentation();
+		def = def.replaceAll("%s", sender);
+		def = def.replaceAll("%c", channel);
+		
+		return def;
+	}
+	public static String getDefaultStringRepresentation()
+	{
+		return "%s joined channel %c";
 	}
 }

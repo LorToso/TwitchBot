@@ -17,9 +17,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
 
+import irc.messages.Join;
+
 public class TestIrcLogger {
 	static File testLogFile = new File("testLog.log");
 	static String address = "localhost";
+	static String channel = "#test";
 	static IrcClient client;
 	static IrcLogger logger;
 	
@@ -32,42 +35,48 @@ public class TestIrcLogger {
 		IrcServer.start();
 	}
 
-	private IrcLogger connect() throws NickAlreadyInUseException, IOException, IrcException
+	public static IrcLogger connect() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
 		client = new IrcClient("ircClient1");
 		logger = new IrcLogger(testLogFile, client);
 		logger.open();
-		client.connect(address);
+		client.connect(address, channel);
+		Thread.sleep(1000);
 		return logger;
 	}
-	private void disconnect()
+	public static void disconnect() throws InterruptedException
 	{
 		client.disconnect();
 		logger.close();
+		Thread.sleep(1000);
 	}
 	
 	@Test
-	public void testConnectToServer() throws NickAlreadyInUseException, IOException, IrcException
+	public void connectToServer() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
-		connect();
-		disconnect();
+		assertTrue(client.isConnected());
 	}
 	
 	@Test
-	public void fileIsBeingCreated() throws NickAlreadyInUseException, IOException, IrcException
+	public void fileIsBeingCreated() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
-		connect();	
 		assertTrue(testLogFile.exists());
-		disconnect();
 	}
 
 	@Test
-	public void fileIsEmpty() throws NickAlreadyInUseException, IOException, IrcException
+	public void fileIsEmpty() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
-		connect();
+		logger.flush();
 		List<String> fullFile = readCompleteLogFile();
-		assertTrue(fullFile.isEmpty());
-		disconnect();
+
+		fullFile.remove(0);
+		fullFile.remove(0);
+		fullFile.remove(0);
+		
+		assertEquals(0,fullFile.size());
+		// Should be: Looking up hostname
+		// Found hostname
+		// client joined
 	}
 	
 	private String readLine() throws IOException
@@ -94,6 +103,28 @@ public class TestIrcLogger {
 		reader.close();
 		return file;
 	}
+
+	@Test
+	public void clientJoins() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	{
+		DummyClient dummy = new DummyClient();
+		dummy.connect(address);
+		dummy.joinChannel(channel);
+		
+		Thread.sleep(2000);
+		
+		Join expectedJoin = new Join();
+		expectedJoin.channel = channel;
+		expectedJoin.sender = dummy.getName(); 
+		
+		logger.flush();
+		
+		List<String> fullFile = readCompleteLogFile();
+		assertTrue(fullFile.size() > 3);
+		assertEquals(expectedJoin.toString(),fullFile.get(3));
+		dummy.disconnect();
+	}
+	
 	
 	@AfterClass
 	public static void after()
