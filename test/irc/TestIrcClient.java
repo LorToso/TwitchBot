@@ -7,11 +7,10 @@ import java.util.ArrayList;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
 
 import irc.IrcClient;
 
@@ -24,16 +23,34 @@ public class TestIrcClient {
 	static String channel = "#test";
 	static IrcClient ircClient;
 	
-	@Rule
-	public TestWatcher watchman= new IrcClientTestWatcher();
-	
-	
 	@BeforeClass
 	public static void onlyOnce() throws IOException, InterruptedException
 	{		
 		IrcServer.start();
 		ircClient = new IrcClient(username);
 	}
+	@AfterClass
+	public static void afterClass()
+	{
+		IrcServer.stop();
+	}
+	
+	@After
+	public void after()
+	{
+		sleep();
+	}
+	
+	private void sleep()
+	{
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static DummyClient addUser() throws NickAlreadyInUseException, IOException, IrcException
 	{
 		DummyClient user = new DummyClient();
@@ -177,9 +194,4 @@ public class TestIrcClient {
 		client.disconnect();
 	}
 	
-	@AfterClass
-	public static void after()
-	{
-		IrcServer.stop();
-	}
 }

@@ -36,4 +36,9 @@ public class IrcKeywordDetector implements MessageListener, JoinListener, Notice
 		throw new NotImplementedException();
 	}
 
+	public void addKeyword(Keyword testKeyword) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

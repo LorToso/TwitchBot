@@ -11,11 +11,11 @@ import java.util.List;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
 
 import irc.messages.Join;
 import irc.messages.Message;
@@ -27,15 +27,57 @@ public class TestIrcLogger {
 	static IrcClient client;
 	static IrcLogger logger;
 	
-	@Rule
-	public TestWatcher watchman= new IrcLoggerTestWatcher(testLogFile);
-	
 	@BeforeClass
-	public static void before()
+	public static void beforeClass()
 	{
 		IrcServer.start();
 	}
+	@AfterClass
+	public static void afterClass()
+	{
+		IrcServer.stop();
+		testLogFile.delete();
+	}
+	
+	@After
+	public void after()
+	{
+		sleep();
+		deleteLogFile();
+		try {
+			TestIrcLogger.disconnect();
+		} catch (InterruptedException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	@Before
+	public void before()
+	{
+		try {
+			TestIrcLogger.connect();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
 
+	private void sleep()
+	{
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	private void deleteLogFile()
+	{
+		if(testLogFile.exists())
+			testLogFile.delete();
+	}
+	
+	
 	public static IrcLogger connect() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
 	{
 		client = new IrcClient("ircClient1");
@@ -262,12 +304,5 @@ public class TestIrcLogger {
 		
 		dummy1.disconnect();
 		dummy2.disconnect();
-	}
-	
-	@AfterClass
-	public static void after()
-	{
-		IrcServer.stop();
-		testLogFile.delete();
 	}
 }

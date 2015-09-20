@@ -43,11 +43,36 @@ public class TestIrcKeywordDetector {
 	public void after()
 	{
 		client.disconnect();
+		sleep();
+	}
+
+	private void sleep()
+	{
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
+	public void connectToServer()
+	{
+		assertTrue(client.isConnected());
+	}
+
+	@Test
 	public void addKeyword()
 	{
-		
+		Keyword testKeyword = new Keyword("time");
+		keywordDetector.addKeyword(testKeyword);
+	}
+	
+	@Test
+	public void keywordIsBeingDetected()
+	{
+		Keyword testKeyword = new Keyword("time");
+		keywordDetector.addKeyword(testKeyword);
+		fail();
 	}
 }

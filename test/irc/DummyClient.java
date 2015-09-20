@@ -1,6 +1,7 @@
 package irc;
 
 import irc.IrcClient;
+import irc.messages.Message;
 import utilities.RandomString;
 
 public class DummyClient extends IrcClient{
@@ -16,5 +17,19 @@ public class DummyClient extends IrcClient{
 		RandomString random = new RandomString(nameLength);
 		String name = "bot_" + random.nextString();
 		return name;
+	}
+	
+	public Message sendDummyMessage(String channel)
+	{
+		final String messageString = "DummyMessage";
+		
+		Message message = new Message();
+		message.channel = channel;
+		message.sender = getName();
+		message.timestamp = System.currentTimeMillis();
+		message.message = messageString;
+		
+		sendMessage(channel, messageString);
+		return message;
 	}
 }
