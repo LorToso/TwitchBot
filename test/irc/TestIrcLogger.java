@@ -79,15 +79,6 @@ public class TestIrcLogger {
 		// Found hostname
 		// client joined
 	}
-	
-	private String readLine() throws IOException
-	{
-		FileReader fReader = new FileReader(testLogFile);
-		BufferedReader reader = new BufferedReader(fReader);
-		String line =reader.readLine();
-		reader.close();
-		return line;
-	}
 
 	private List<String> readCompleteLogFile() throws IOException
 	{
@@ -225,7 +216,53 @@ public class TestIrcLogger {
 		assertTrue(notice1.startsWith("Notice"));
 		assertTrue(notice2.startsWith("Notice"));
 	}
-	
+	@Test
+	public void completeLoggingExample() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	{
+		final String message1 = "Hey there!";
+		final String message2 = "What up?";
+		final String message3 = "I'm leaving.";
+		final String message4 = "K, bye.";
+
+		DummyClient dummy1 = addDummy();
+		DummyClient dummy2 = addDummy();
+
+		Join expectedJoin1 = generateJoin(dummy1.getName());
+		Join expectedJoin2 = generateJoin(dummy2.getName());
+
+		waitForLog();
+
+		dummy1.sendMessage(channel, message1);
+		Thread.sleep(200);
+		dummy2.sendMessage(channel, message2);
+		Thread.sleep(200);
+		dummy1.sendMessage(channel, message3);
+		Thread.sleep(200);
+		dummy2.sendMessage(channel, message4);
+		Thread.sleep(200);
+		
+		Message expectedMessage1 = generateMessage(dummy1.getName(), message1);
+		Message expectedMessage2 = generateMessage(dummy2.getName(), message2);
+		Message expectedMessage3 = generateMessage(dummy1.getName(), message3);
+		Message expectedMessage4 = generateMessage(dummy2.getName(), message4);
+		
+		waitForLog();
+		
+		List<String> fullFile = readCompleteLogFile();
+		
+		assertTrue(fullFile.size()==9);
+		assertTrue(fullFile.get(0).startsWith("Notice"));
+		assertTrue(fullFile.get(1).startsWith("Notice"));
+		assertEquals(expectedJoin1.toString(), fullFile.get(3));
+		assertEquals(expectedJoin2.toString(), fullFile.get(4));
+		assertEquals(expectedMessage1.toString(), fullFile.get(5));
+		assertEquals(expectedMessage2.toString(), fullFile.get(6));
+		assertEquals(expectedMessage3.toString(), fullFile.get(7));
+		assertEquals(expectedMessage4.toString(), fullFile.get(8));
+		
+		dummy1.disconnect();
+		dummy2.disconnect();
+	}
 	
 	@AfterClass
 	public static void after()
