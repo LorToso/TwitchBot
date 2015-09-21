@@ -51,13 +51,6 @@ public class TestIrcClient {
 	}
 	
 	
-	public static DummyClient addUser() throws NickAlreadyInUseException, IOException, IrcException
-	{
-		DummyClient user = new DummyClient();
-		connectToServer(user);
-		return user;
-	}
-	
 	@Test
 	public void connectToServer() throws NickAlreadyInUseException,  IrcException, IOException {
 		try{
@@ -87,17 +80,6 @@ public class TestIrcClient {
 		}
 		fail("Successfully connected to not existing server.");
 	} 
-
-	@Test
-	public void addRandomUser()
-	{
-		try {
-			addUser();
-		} catch (IOException | IrcException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
 	
 	@Test
 	public void validateDummyClientName() throws Exception
@@ -108,7 +90,8 @@ public class TestIrcClient {
 		try {
 			for(int i=0; i < dummyCount; i++)
 			{
-				list.add(addUser());	
+				DummyClient dummy = DummyClient.addDummy(address, channel);
+				list.add(dummy);	
 			}
 		} catch (IOException | IrcException e) {
 			e.printStackTrace();
@@ -124,7 +107,7 @@ public class TestIrcClient {
 	{
 		final String testmessage = "test message";
 		
-		DummyClient dummy = addUser();
+		DummyClient dummy = DummyClient.addDummy(address, channel);
 		DummyMessagable m = new DummyMessagable(ircClient.getNick(), testmessage);
 		dummy.addMessageListener(m);
 
@@ -145,7 +128,7 @@ public class TestIrcClient {
 		final String testmessage1 = "test message1";
 		final String testmessage2 = "test message2";
 		
-		DummyClient dummy = addUser();
+		DummyClient dummy = DummyClient.addDummy(address, channel);
 		DummyMessagable m = new DummyMessagable(ircClient.getNick(), testmessage1);
 		dummy.addMessageListener(m);
 
@@ -168,18 +151,18 @@ public class TestIrcClient {
 		final String testmessage = "test message";
 		
 		connectToServer(ircClient);
-		DummyClient user =  addUser();
+		DummyClient dummy = DummyClient.addDummy(address, channel);
 
-		DummyMessagable m = new DummyMessagable(user.getNick(), testmessage);
+		DummyMessagable m = new DummyMessagable(dummy.getNick(), testmessage);
 		ircClient.addMessageListener(m);
 				
-		user.sendMessage(channel, testmessage);
+		dummy.sendMessage(channel, testmessage);
 
 		Thread.sleep(3000);
 		
 		ircClient.removeMessageListener(m);
 		disconnectFromServer(ircClient);
-		disconnectFromServer(user);
+		disconnectFromServer(dummy);
 
 		assertTrue(m.success);
 	}

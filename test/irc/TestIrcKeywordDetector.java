@@ -12,6 +12,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import irc.keywords.Keyword;
+import irc.keywords.KeywordAction;
+import irc.keywords.NoAction;
+
 public class TestIrcKeywordDetector {
 	final static String address = "localhost";
 	final static String channel = "#test";
@@ -37,6 +41,7 @@ public class TestIrcKeywordDetector {
 		keywordDetector = new IrcKeywordDetector(client);
 		client.connect(address);
 		client.joinChannel(channel);
+		sleep();
 	}
 
 	@After
@@ -49,7 +54,15 @@ public class TestIrcKeywordDetector {
 	private void sleep()
 	{
 		try {
-			Thread.sleep(500);
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	private void sleep2()
+	{
+		try {
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -65,14 +78,25 @@ public class TestIrcKeywordDetector {
 	public void addKeyword()
 	{
 		Keyword testKeyword = new Keyword("time");
-		keywordDetector.addKeyword(testKeyword);
+		keywordDetector.addKeyword(testKeyword, new NoAction());
 	}
 	
 	@Test
-	public void keywordIsBeingDetected()
+	public void keywordIsBeingDetected() throws NickAlreadyInUseException, IOException, IrcException
 	{
-		Keyword testKeyword = new Keyword("time");
-		keywordDetector.addKeyword(testKeyword);
-		fail();
+		final String keyString = "time";
+		
+		Keyword testKeyword = new Keyword(keyString);
+		KeywordAction actionKeyword = 
+		new KeywordAction(){
+			@Override
+			public void performAction() {}
+		};
+		keywordDetector.addKeyword(testKeyword, actionKeyword);
+		
+		DummyClient dummy = DummyClient.addDummy(address, channel);
+		dummy.sendMessage(channel, "!" + keyString);
+		sleep2();
+		assertTrue(actionKeyword.wasPerformed());
 	}
 }

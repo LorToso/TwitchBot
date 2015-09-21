@@ -1,5 +1,10 @@
 package irc;
 
+import java.io.IOException;
+
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.NickAlreadyInUseException;
+
 import irc.IrcClient;
 import irc.messages.Message;
 import utilities.RandomString;
@@ -31,5 +36,13 @@ public class DummyClient extends IrcClient{
 		
 		sendMessage(channel, messageString);
 		return message;
+	}
+	
+	public static DummyClient addDummy(String address, String channel) throws NickAlreadyInUseException, IOException, IrcException
+	{
+		DummyClient user = new DummyClient();
+		user.connect(address);
+		user.joinChannel(channel);
+		return user;
 	}
 }
