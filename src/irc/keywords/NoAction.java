@@ -1,9 +1,9 @@
 package irc.keywords;
 
-public class NoAction extends KeywordAction{
+public class NoAction extends Action{
 
 	@Override
-	protected void performAction() {
+	protected void performAction(Match match) {
 	}
 
 }
