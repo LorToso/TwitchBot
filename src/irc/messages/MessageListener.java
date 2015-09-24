@@ -1,5 +1,5 @@
 package irc.messages;
 
 public interface MessageListener{
-	public void onEvent(Message message);
+	void onEvent(Message message);
 }

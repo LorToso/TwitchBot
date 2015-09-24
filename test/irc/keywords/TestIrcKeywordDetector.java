@@ -1,24 +1,15 @@
 package irc.keywords;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-
-import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import irc.keywords.Keyword;
 import irc.DummyClient;
 import irc.IrcClient;
 import irc.IrcKeywordDetector;
 import irc.IrcServer;
-import irc.keywords.Action;
-import irc.keywords.NoAction;
+import org.jibble.pircbot.IrcException;
+import org.junit.*;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 public class TestIrcKeywordDetector {
 	final static String address = "localhost";
@@ -39,7 +30,7 @@ public class TestIrcKeywordDetector {
 	}
 	
 	@Before
-	public void before() throws NickAlreadyInUseException, IOException, IrcException
+	public void before() throws IOException, IrcException
 	{
 		client = new IrcClient("testClient1");
 		keywordDetector = new IrcKeywordDetector();
@@ -89,7 +80,7 @@ public class TestIrcKeywordDetector {
 	}
 	
 	@Test
-	public void keywordWithNoArguments() throws NickAlreadyInUseException, IOException, IrcException
+	public void keywordWithNoArguments() throws IOException, IrcException
 	{
 		final String keyString = "none";
 		
@@ -100,31 +91,12 @@ public class TestIrcKeywordDetector {
 		DummyClient dummy = DummyClient.addDummy(address, channel);
 		dummy.sendMessage(channel, "!" + keyString);
 
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
-		sleep2();
+        sleep2();
 		assertTrue(actionKeyword.wasPerformed());
 	}
 
 	@Test
-	public void keywordWithStringArgument() throws NickAlreadyInUseException, IOException, IrcException
+	public void keywordWithStringArgument() throws IOException, IrcException
 	{
 		final String keyString = "echo";
 		final String paramString = "testmessage";

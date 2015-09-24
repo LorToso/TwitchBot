@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
 
 import irc.messages.Join;
@@ -16,9 +15,9 @@ import irc.messages.Notice;
 import irc.messages.NoticeListener;
 
 public class IrcClient extends PircBot{
-	private List<MessageListener> 	messageListeners 	= new ArrayList<MessageListener>();
-	private List<JoinListener> 		joinListeners 		= new ArrayList<JoinListener>();
-	private List<NoticeListener> 	noticeListeners 	= new ArrayList<NoticeListener>();
+	private List<MessageListener> 	messageListeners 	= new ArrayList<>();
+	private List<JoinListener> 		joinListeners 		= new ArrayList<>();
+	private List<NoticeListener> 	noticeListeners 	= new ArrayList<>();
 
 	public IrcClient(String name){
 		setName(name);
@@ -82,7 +81,7 @@ public class IrcClient extends PircBot{
 		for(NoticeListener m : noticeListeners)
 			m.onEvent(packedNotice);
 	}
-	public void connect(String address, String channel) throws NickAlreadyInUseException, IOException, IrcException
+	public void connect(String address, String channel) throws IOException, IrcException
 	{
 		connect(address);
 		joinChannel(channel);

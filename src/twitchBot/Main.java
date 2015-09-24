@@ -4,13 +4,12 @@ import java.io.IOException;
 
 
 import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
 
 import irc.IrcClient;
 import irc.IrcServer;
 
 public class Main {
-    public static void main(String[] args) throws NickAlreadyInUseException, IOException, IrcException, InterruptedException {
+    public static void main(String[] args) throws IOException, IrcException, InterruptedException {
     	String address = "localhost";
     	String username = "lortoso";
     	//String pw = "oauth:hzvtvjaca2fy6zrr2znolmbgr09mbi";

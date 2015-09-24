@@ -1,5 +1,5 @@
 package irc.messages;
 
 public interface JoinListener{
-	public void onEvent(Join joiner);
+	void onEvent(Join joiner);
 }

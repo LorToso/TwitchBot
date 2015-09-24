@@ -1,6 +1,7 @@
 package irc.keywords;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import irc.messages.Message;
@@ -16,9 +17,8 @@ public class KeywordMatcher {
 	private static List<String> splitToParameters(Message message) {
 		List<String> parameters = new ArrayList<>();
 		String[] allParameters = message.message.split(" ");
-		
-		for(String param : allParameters)
-			parameters.add(param);
+
+		Collections.addAll(parameters, allParameters);
 		return parameters;
 	}
 	
@@ -35,13 +35,10 @@ public class KeywordMatcher {
 	}
 
 	public static Keyword extractKeyword(Message message) {
-		System.out.println(message);
 		if(!hasCorrectKeywordFormat(message))
 			return new NoKeyword();
-		System.out.println("Has correct format");
-		Keyword keyword = splitKeyword(message);
-		System.out.println("Split Keyword: " + keyword);
-		return keyword;
+
+		return splitKeyword(message);
 	}
 	private static Keyword splitKeyword(Message message)
 	{
@@ -52,8 +49,7 @@ public class KeywordMatcher {
 			endOfKeyword = message.message.length();
 		
 		String keywordString = message.message.substring(startOfKeyword, endOfKeyword);
-		Keyword keyword = new Keyword(keywordString);
-		return keyword;
+        return new Keyword(keywordString);
 	}
 	
 }

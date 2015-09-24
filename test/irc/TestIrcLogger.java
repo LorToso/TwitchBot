@@ -78,7 +78,7 @@ public class TestIrcLogger {
 	}
 	
 	
-	public static IrcLogger connect() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public static IrcLogger connect() throws IOException, IrcException, InterruptedException
 	{
 		client = new IrcClient("ircClient1");
 		logger = new IrcLogger(testLogFile, client);
@@ -95,19 +95,19 @@ public class TestIrcLogger {
 	}
 	
 	@Test
-	public void connectToServer() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void connectToServer() throws IOException, IrcException, InterruptedException
 	{
 		assertTrue(client.isConnected());
 	}
 	
 	@Test
-	public void fileIsBeingCreated() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void fileIsBeingCreated() throws IOException, IrcException, InterruptedException
 	{
 		assertTrue(testLogFile.exists());
 	}
 
 	@Test
-	public void fileIsEmpty() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void fileIsEmpty() throws IOException, IrcException, InterruptedException
 	{
 		logger.flush();
 		List<String> fullFile = readCompleteLogFile();
@@ -127,7 +127,7 @@ public class TestIrcLogger {
 		FileReader fReader = new FileReader(testLogFile);
 		BufferedReader reader = new BufferedReader(fReader);
 		
-		List<String> file = new ArrayList<String>();
+		List<String> file = new ArrayList<>();
 		String line = reader.readLine();
 		while(line != null)
 		{
@@ -139,7 +139,7 @@ public class TestIrcLogger {
 	}
 
 	@Test
-	public void clientJoins() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void clientJoins() throws IOException, IrcException, InterruptedException
 	{
 		DummyClient dummy = addDummy();
 		Join expectedJoin = generateJoin(dummy.getName()); 
@@ -153,7 +153,7 @@ public class TestIrcLogger {
 	}
 
 	@Test
-	public void multipleClientJoin() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void multipleClientJoin() throws IOException, IrcException, InterruptedException
 	{
 		DummyClient dummy1 = addDummy();
 		DummyClient dummy2 = addDummy();
@@ -172,7 +172,7 @@ public class TestIrcLogger {
 	}	
 	
 	@Test
-	public void logMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void logMessage() throws IOException, IrcException, InterruptedException
 	{
 		final String messageString = "test message";
 		
@@ -188,7 +188,7 @@ public class TestIrcLogger {
 		dummy1.disconnect();
 	}
 	@Test
-	public void logMultipleMessages() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void logMultipleMessages() throws IOException, IrcException, InterruptedException
 	{
 		final String messageString1 = "test message 1";
 		final String messageString2 = "test message 2";
@@ -231,7 +231,7 @@ public class TestIrcLogger {
 		return expectedMessage;
 	}
 	
-	private DummyClient addDummy() throws NickAlreadyInUseException, IOException, IrcException
+	private DummyClient addDummy() throws IOException, IrcException
 	{
 		DummyClient dummy = new DummyClient();
 		dummy.connect(address);
@@ -259,7 +259,7 @@ public class TestIrcLogger {
 		assertTrue(notice2.startsWith("Notice"));
 	}
 	@Test
-	public void completeLoggingExample() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void completeLoggingExample() throws IOException, IrcException, InterruptedException
 	{
 		final String message1 = "Hey there!";
 		final String message2 = "What up?";

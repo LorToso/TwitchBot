@@ -43,10 +43,6 @@ public class IrcKeywordDetector implements MessageListener{
 	@Override
 	public void onEvent(Message message) {
 		Keyword keyword = KeywordMatcher.extractKeyword(message);
-		System.out.println("Detected keyword:" + keyword);
-
-		Set<Keyword> k = allKeywords.keySet();
-		Collection<Action> k2 = allKeywords.values();
 		
 		Action action = getActionForKeyword(keyword);
 		Match match = KeywordMatcher.match(keyword, message);
@@ -55,8 +51,6 @@ public class IrcKeywordDetector implements MessageListener{
 	}
 	private Action getActionForKeyword(Keyword keyword)
 	{
-		boolean b = allKeywords.containsKey(keyword);
-		
 		return allKeywords.get(keyword);
 	}
 
