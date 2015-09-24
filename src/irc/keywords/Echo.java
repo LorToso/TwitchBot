@@ -1,10 +1,10 @@
 package irc.keywords;
 
 public class Echo extends Keyword{
-	final String keyString = "echo";
+	final static String keyString = "echo";
 	
 	public Echo() {
-		super("echo");
+		super(keyString);
 	}
 
 }
