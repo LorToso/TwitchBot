@@ -1,18 +1,15 @@
 package irc;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import irc.IrcClient;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 public class TestIrcClient {
 	
@@ -52,21 +49,17 @@ public class TestIrcClient {
 	
 	
 	@Test
-	public void connectToServer() throws NickAlreadyInUseException,  IrcException, IOException {
+	public void connectToServer() throws IrcException, IOException {
 		try{
 			connectToServer(ircClient);
-		}
-		catch(Exception e)
-		{
-			throw e;
-		}finally
+		} finally
 		{
 			disconnectFromServer(ircClient);
 		}
 	}
 
 	@Test
-	public void connectToNotExistingServer() throws NickAlreadyInUseException,  IrcException {
+	public void connectToNotExistingServer() throws IrcException {
 		try{
 			ircClient.connect("randomServer", port, pw);
 			ircClient.joinChannel(channel);
@@ -97,13 +90,12 @@ public class TestIrcClient {
 			e.printStackTrace();
 			throw e;
 		}
-		
-		for(DummyClient dummy : list)
-			dummy.disconnect();
+
+		list.forEach(irc.DummyClient::disconnect);
 	}
 	
 	@Test
-	public void sendMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void sendMessage() throws IOException, IrcException, InterruptedException
 	{
 		final String testmessage = "test message";
 		
@@ -123,7 +115,7 @@ public class TestIrcClient {
 	}	
 	
 	@Test
-	public void sendWrongMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void sendWrongMessage() throws IOException, IrcException, InterruptedException
 	{
 		final String testmessage1 = "test message1";
 		final String testmessage2 = "test message2";
@@ -146,7 +138,7 @@ public class TestIrcClient {
 	
 	
 	@Test
-	public void receiveMessage() throws NickAlreadyInUseException, IOException, IrcException, InterruptedException
+	public void receiveMessage() throws IOException, IrcException, InterruptedException
 	{
 		final String testmessage = "test message";
 		
@@ -167,7 +159,7 @@ public class TestIrcClient {
 		assertTrue(m.success);
 	}
 	
-	private static void connectToServer(IrcClient client) throws NickAlreadyInUseException, IOException, IrcException
+	private static void connectToServer(IrcClient client) throws IOException, IrcException
 	{
 		client.connect(address);
 		client.joinChannel(channel);
