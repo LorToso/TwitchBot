@@ -1,9 +1,8 @@
 package irc.keywords;
 
-import irc.DummyClient;
-import irc.IrcClient;
-import irc.IrcKeywordDetector;
-import irc.IrcServer;
+import irc.*;
+import irc.messages.Message;
+import irc.messages.MessageListener;
 import org.jibble.pircbot.IrcException;
 import org.junit.*;
 
@@ -98,7 +97,7 @@ public class TestIrcKeywordDetector {
 	@Test
 	public void keywordWithStringArgument() throws IOException, IrcException
 	{
-		final String keyString = "echo";
+		final String keyString = "singleArgument";
 		final String paramString = "testmessage";
 
 		Keyword testKeyword = new Keyword(keyString);
@@ -111,4 +110,25 @@ public class TestIrcKeywordDetector {
 		sleep2();
 		assertTrue(actionKeyword.wasPerformed());
 	}
+
+    @Test
+    public void echoTest() throws IOException, IrcException
+    {
+        final String paramString = "testmessage";
+
+        Keyword testKeyword = new Echo();
+        Action actionKeyword = new EchoAction(client);
+        keywordDetector.addKeyword(testKeyword, actionKeyword);
+
+
+        DummyMessagable messagable = new DummyMessagable(client.getName(), paramString);
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+        dummy.addMessageListener(messagable);
+        dummy.sendMessage(channel, testKeyword + " " + paramString);
+
+        //for (int i = 0; i < 10; i++)
+        sleep2();
+        assertTrue(actionKeyword.wasPerformed());
+        assertTrue(messagable.success);
+    }
 }

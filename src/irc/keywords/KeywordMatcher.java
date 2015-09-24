@@ -1,24 +1,24 @@
 package irc.keywords;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import irc.messages.Message;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class KeywordMatcher {
 	public static Match match(Keyword keyword, Message message)
 	{
 		List<String> parameters = splitToParameters(message);
-		Match match = new Match(keyword, message, parameters);
-		return match;
+        return new Match(keyword, message, parameters);
 	}
 
 	private static List<String> splitToParameters(Message message) {
 		List<String> parameters = new ArrayList<>();
 		String[] allParameters = message.message.split(" ");
 
-		Collections.addAll(parameters, allParameters);
+        parameters.addAll(Arrays.asList(allParameters).subList(1, allParameters.length));
+
 		return parameters;
 	}
 	

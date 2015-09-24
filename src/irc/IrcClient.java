@@ -81,6 +81,17 @@ public class IrcClient extends PircBot{
 		for(NoticeListener m : noticeListeners)
 			m.onEvent(packedNotice);
 	}
+    final protected void onPrivateMessage(String sender, String login, String hostname, String message)
+    {
+        Message packedMessage = new Message();
+        packedMessage.sender = sender;
+        packedMessage.message = message;
+        packedMessage.timestamp = System.currentTimeMillis();
+
+        for(MessageListener m : messageListeners)
+            m.onEvent(packedMessage);
+    }
+
 	public void connect(String address, String channel) throws IOException, IrcException
 	{
 		connect(address);

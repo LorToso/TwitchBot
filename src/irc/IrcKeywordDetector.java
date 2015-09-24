@@ -1,18 +1,11 @@
 package irc;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import irc.keywords.Keyword;
-import irc.keywords.Action;
-import irc.keywords.Match;
-import irc.keywords.NoAction;
-import irc.keywords.NoKeyword;
-import irc.keywords.KeywordMatcher;
+import irc.keywords.*;
 import irc.messages.Message;
 import irc.messages.MessageListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IrcKeywordDetector implements MessageListener{
 	IrcClient client;
@@ -26,8 +19,6 @@ public class IrcKeywordDetector implements MessageListener{
 	public IrcKeywordDetector(String keywordPrefix) {
 		this.keywordPrefix = keywordPrefix;
 		this.allKeywords = new HashMap<>();
-		
-		this.allKeywords.put(new NoKeyword(), new NoAction());
 	}
 	public void connect(IrcClient client)
 	{
@@ -51,7 +42,8 @@ public class IrcKeywordDetector implements MessageListener{
 	}
 	private Action getActionForKeyword(Keyword keyword)
 	{
-		return allKeywords.get(keyword);
+		Action action = allKeywords.get(keyword);
+		return action!=null ? action : new NoAction();
 	}
 
 	public void addKeyword(Keyword keyword, Action actionKeyword) {

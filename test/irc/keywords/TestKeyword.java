@@ -13,4 +13,25 @@ public class TestKeyword {
 		Keyword keyword2 = new Keyword("test");
 		assertEquals(keyword1.hashCode(), keyword2.hashCode());
 	}
+	@Test
+	public void subTypesHaveTheSameHash()
+	{
+		Keyword keyword1 = new Keyword("echo");
+		Keyword keyword2 = new Echo();
+		assertEquals(keyword1.hashCode(), keyword2.hashCode());
+	}
+	@Test
+	public void keyWordsEqual()
+	{
+		Keyword keyword1 = new Keyword("test");
+		Keyword keyword2 = new Keyword("test");
+		assertEquals(keyword1, keyword2);
+	}
+	@Test
+	public void subTypesEqual()
+	{
+		Keyword keyword1 = new Keyword("echo");
+		Keyword keyword2 = new Echo();
+		assertEquals(keyword1, keyword2);
+	}
 }

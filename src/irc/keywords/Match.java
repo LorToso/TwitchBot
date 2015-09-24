@@ -5,9 +5,9 @@ import java.util.List;
 import irc.messages.Message;
 
 public class Match {
-	Keyword matchedKeyword;
-	Message message;
-	List<String> parameters;
+	private Keyword matchedKeyword;
+	private Message message;
+	private List<String> parameters;
 	
 
 
@@ -29,6 +29,10 @@ public class Match {
 	public Double getDoubleParameter(int index) throws NumberFormatException
 	{
 		return Double.valueOf(parameters.get(index));
+	}
+	public String getSender()
+	{
+		return message.sender;
 	}
 
 }
