@@ -7,7 +7,9 @@ public class DummyMessagable implements MessageListener{
 	public boolean success = false;
 	String expectedUser;
 	String expectedMessage;
-	
+
+	public Message receivedMessage;
+
 	public DummyMessagable(String user, String message) {
 		this.expectedUser = user;
 		this.expectedMessage = message;
@@ -15,6 +17,7 @@ public class DummyMessagable implements MessageListener{
 	
 	@Override
 	public void onEvent(Message message) {
+		receivedMessage = message;
 		success = expectedUser.equals(message.sender) && expectedMessage.equals(message.message);
 	}
 }

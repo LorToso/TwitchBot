@@ -1,10 +1,7 @@
 package irc;
 
 import org.jibble.pircbot.IrcException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,45 +28,33 @@ public class TestIrcClient {
 	{
 		IrcServer.stop();
 	}
-	
+
+    @Before
+    public void before() throws IOException, IrcException {
+        ircClient.connect(address,channel);
+    }
+
 	@After
-	public void after()
-	{
-		sleep();
-	}
-	
-	private void sleep()
-	{
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public void after() throws InterruptedException {
+        ircClient.disconnect();
+        Thread.sleep(500);
 	}
 	
 	
 	@Test
 	public void connectToServer() throws IrcException, IOException {
-		try{
-			connectToServer(ircClient);
-		} finally
-		{
-			disconnectFromServer(ircClient);
-		}
+        assertTrue(ircClient.isConnected());
 	}
 
 	@Test
 	public void connectToNotExistingServer() throws IrcException {
+        ircClient.disconnect();
 		try{
 			ircClient.connect("randomServer", port, pw);
 			ircClient.joinChannel(channel);
 		}
 		catch(IOException ex){
 			return;
-		}
-		finally
-		{
-			disconnectFromServer(ircClient);
 		}
 		fail("Successfully connected to not existing server.");
 	} 
@@ -103,14 +88,11 @@ public class TestIrcClient {
 		DummyMessagable m = new DummyMessagable(ircClient.getNick(), testmessage);
 		dummy.addMessageListener(m);
 
-		connectToServer(ircClient);
-		
 		ircClient.sendMessage(channel, testmessage);
 		Thread.sleep(2000);
-		
-		disconnectFromServer(ircClient);
-		disconnectFromServer(dummy);
-		
+
+        dummy.disconnect();
+
 		assertTrue(m.success);
 	}	
 	
@@ -124,15 +106,12 @@ public class TestIrcClient {
 		DummyMessagable m = new DummyMessagable(ircClient.getNick(), testmessage1);
 		dummy.addMessageListener(m);
 
-		connectToServer(ircClient);
 		
 		ircClient.sendMessage(channel, testmessage2);
 		
 		Thread.sleep(2000);
 
-		disconnectFromServer(ircClient);
-		disconnectFromServer(dummy);
-		
+        dummy.disconnect();
 		assertFalse(m.success);
 	}
 	
@@ -141,8 +120,7 @@ public class TestIrcClient {
 	public void receiveMessage() throws IOException, IrcException, InterruptedException
 	{
 		final String testmessage = "test message";
-		
-		connectToServer(ircClient);
+
 		DummyClient dummy = DummyClient.addDummy(address, channel);
 
 		DummyMessagable m = new DummyMessagable(dummy.getNick(), testmessage);
@@ -153,20 +131,29 @@ public class TestIrcClient {
 		Thread.sleep(3000);
 		
 		ircClient.removeMessageListener(m);
-		disconnectFromServer(ircClient);
-		disconnectFromServer(dummy);
+
+        dummy.disconnect();
 
 		assertTrue(m.success);
 	}
-	
-	private static void connectToServer(IrcClient client) throws IOException, IrcException
-	{
-		client.connect(address);
-		client.joinChannel(channel);
-	}
-	private static void disconnectFromServer(IrcClient client)
-	{
-		client.disconnect();
-	}
+
+	@Test
+    public void privateMessage() throws IOException, IrcException, InterruptedException {
+        final String testmessage = "test message";
+
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+
+        DummyMessagable messagable = new DummyMessagable(dummy.getName(),testmessage);
+        dummy.addMessageListener(messagable);
+        ircClient.sendMessage(dummy.getName(),testmessage);
+
+        Thread.sleep(2000);
+
+        assertEquals(messagable.receivedMessage.channel, "private");
+        assertEquals(messagable.receivedMessage.message, testmessage);
+        assertEquals(messagable.receivedMessage.sender, ircClient.getName());
+
+        dummy.disconnect();
+    }
 	
 }

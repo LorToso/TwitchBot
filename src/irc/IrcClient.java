@@ -85,6 +85,7 @@ public class IrcClient extends PircBot{
     {
         Message packedMessage = new Message();
         packedMessage.sender = sender;
+        packedMessage.channel = "private";
         packedMessage.message = message;
         packedMessage.timestamp = System.currentTimeMillis();
 
