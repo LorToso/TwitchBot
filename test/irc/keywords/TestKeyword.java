@@ -38,7 +38,7 @@ public class TestKeyword {
 	public void twoWords()
 	{
 		try {
-			Keyword keyword1 = new Keyword("this test");
+			new Keyword("this test");
 		}
 		catch(IllegalArgumentException e)
 		{
@@ -46,16 +46,35 @@ public class TestKeyword {
 		}
 		fail();
 	}
-	@Test
-	public void noKeyword()
-	{
-		try {
-			Keyword keyword1 = new Keyword("");
-		}
-		catch(IllegalArgumentException e)
-		{
-			return;
-		}
-		fail();
-	}
+    @Test
+    public void noKeyword()
+    {
+        try {
+            new Keyword("");
+        }
+        catch(IllegalArgumentException e)
+        {
+            return;
+        }
+        fail();
+    }
+    @Test
+    public void illegalSymbol()
+    {
+        try {
+            new Keyword("!test");
+        }
+        catch(IllegalArgumentException e)
+        {
+            return;
+        }
+        fail();
+    }
+    @Test
+    public void toStringTest()
+    {
+        final String testString = "test";
+        Keyword k = new Keyword(testString);
+        assertTrue(k.toString().equals(Keyword.keywordPrefix + testString));
+    }
 }
