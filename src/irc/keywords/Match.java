@@ -7,28 +7,28 @@ import irc.messages.Message;
 public class Match {
 	private Keyword matchedKeyword;
 	private Message message;
-	private List<String> parameters;
+	private List<Object> parameters;
 	
 
 
-	public Match(Keyword keyword, Message message, List<String> parameters) {
+	public Match(Keyword keyword, Message message, List<Object> parameters) {
 		this.matchedKeyword = keyword;
-		this.message = message;	
+		this.message = message;
 		this.parameters = parameters;
 	}
 
 
-	public String getStringParameter(int index) throws NumberFormatException
+	public String getStringParameter(int index)
 	{
-		return parameters.get(index);
+		return (String)parameters.get(index);
 	}
-	public Integer getIntParameter(int index) throws NumberFormatException
+	public Integer getIntParameter(int index)
 	{
-		return Integer.valueOf(parameters.get(index));
+		return (Integer)parameters.get(index);
 	}
-	public Double getDoubleParameter(int index) throws NumberFormatException
+	public Double getDoubleParameter(int index)
 	{
-		return Double.valueOf(parameters.get(index));
+		return (Double)parameters.get(index);
 	}
 	public String getSender()
 	{

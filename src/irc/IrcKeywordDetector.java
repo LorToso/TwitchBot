@@ -33,10 +33,16 @@ public class IrcKeywordDetector implements MessageListener{
 
 	@Override
 	public void onEvent(Message message) {
-		Keyword keyword = KeywordMatcher.extractKeyword(message);
-		
-		Action action = getActionForKeyword(keyword);
-		Match match = KeywordMatcher.match(keyword, message);
+        Keyword detectedKeyword = new NoKeyword();
+		for(Keyword keyword : allKeywords.keySet())
+        {
+            if(!KeywordMatcher.doesMatch(message, keyword))
+                return;
+            detectedKeyword = keyword;
+        }
+
+		Action action = getActionForKeyword(detectedKeyword);
+		Match match = KeywordMatcher.match(message,detectedKeyword);
 		
 		action.act(match);
 	}

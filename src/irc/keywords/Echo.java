@@ -4,7 +4,7 @@ public class Echo extends Keyword{
 	final static String keyString = "echo";
 	
 	public Echo() {
-		super(keyString);
+		super(keyString, String.class);
 	}
 
 }

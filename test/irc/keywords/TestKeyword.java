@@ -34,4 +34,28 @@ public class TestKeyword {
 		Keyword keyword2 = new Echo();
 		assertEquals(keyword1, keyword2);
 	}
+	@Test
+	public void twoWords()
+	{
+		try {
+			Keyword keyword1 = new Keyword("this test");
+		}
+		catch(IllegalArgumentException e)
+		{
+			return;
+		}
+		fail();
+	}
+	@Test
+	public void noKeyword()
+	{
+		try {
+			Keyword keyword1 = new Keyword("");
+		}
+		catch(IllegalArgumentException e)
+		{
+			return;
+		}
+		fail();
+	}
 }
