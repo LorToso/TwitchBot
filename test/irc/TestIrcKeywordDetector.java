@@ -1,6 +1,7 @@
-package irc.keywords;
+package irc;
 
 import irc.*;
+import irc.keywords.*;
 import org.jibble.pircbot.IrcException;
 import org.junit.*;
 
@@ -120,14 +121,52 @@ public class TestIrcKeywordDetector {
         keywordDetector.addKeyword(testKeyword, actionKeyword);
 
 
-        DummyMessagable messagable = new DummyMessagable(client.getName(), paramString);
         DummyClient dummy = DummyClient.addDummy(address, channel);
-        dummy.addMessageListener(messagable);
         dummy.sendMessage(channel, testKeyword + " " + paramString);
 
-        //for (int i = 0; i < 10; i++)
+        sleep2();
+
+        boolean messageReceived = dummy.receivedMessage(client.getName(), paramString);
+        assertTrue(messageReceived);
+
+        assertTrue(actionKeyword.wasPerformed());
+    }
+
+    @Test
+    public void integerTest() throws IOException, IrcException
+    {
+        final String paramString = "123";
+        final String key = "integer";
+
+
+        Keyword testKeyword = new Keyword(key,Integer.class);
+        Action actionKeyword = new NoAction();
+        keywordDetector.addKeyword(testKeyword, actionKeyword);
+
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+        dummy.sendMessage(channel, testKeyword + " " + paramString);
+
         sleep2();
         assertTrue(actionKeyword.wasPerformed());
-        assertTrue(messagable.success);
+    }
+
+    @Test
+    public void additionTest() throws IOException, IrcException
+    {
+        final Integer sumand1 = 123;
+        final Integer sumand2 = 456;
+        final String paramString = sumand1.toString() + " " + sumand2.toString();
+
+        Keyword testKeyword = new Add();
+        Action actionKeyword = new AddAction(client);
+        keywordDetector.addKeyword(testKeyword, actionKeyword);
+
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+        dummy.sendMessage(channel, testKeyword + " " + paramString);
+
+        sleep2();
+        assertTrue(actionKeyword.wasPerformed());
+        boolean messageReceived = dummy.receivedMessage(client.getName(), Integer.toString(sumand1 + sumand2));
+        assertTrue(messageReceived);
     }
 }

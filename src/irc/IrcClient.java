@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
@@ -57,8 +58,14 @@ public class IrcClient extends PircBot{
 		packedMessage.message = message;
 		packedMessage.timestamp = System.currentTimeMillis();
 
-		for(MessageListener m : messageListeners)
-			m.onEvent(packedMessage);
+        try {
+            for (MessageListener m : messageListeners)
+                m.onEvent(packedMessage);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 	}	
 	final protected void onJoin(String channel, String sender, String login, String hostname)
 	{
