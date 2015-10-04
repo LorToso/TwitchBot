@@ -15,6 +15,9 @@ public class Keyword {
             throw new IllegalArgumentException("Space in keyword is invalid.");
         if(keyword.length()==0)
             throw new IllegalArgumentException("Keyword is invalid.");
+        if(keyword.contains("!"))
+            throw new IllegalArgumentException("Illegal symbol in keyword.");
+
 
         this.keyword = keywordPrefix + keyword;
         this.parameters = parameters;
