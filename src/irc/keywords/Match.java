@@ -5,14 +5,12 @@ import java.util.List;
 import irc.messages.Message;
 
 public class Match {
-	private Keyword matchedKeyword;
 	private Message message;
 	private List<Object> parameters;
 	
 
 
-	public Match(Keyword keyword, Message message, List<Object> parameters) {
-		this.matchedKeyword = keyword;
+	public Match(Message message, List<Object> parameters) {
 		this.message = message;
 		this.parameters = parameters;
 	}
@@ -26,9 +24,9 @@ public class Match {
 	{
 		return (Integer)parameters.get(index);
 	}
-	public Double getDoubleParameter(int index)
+	public Float getFloatParameter(int index)
 	{
-		return (Double)parameters.get(index);
+		return (Float)parameters.get(index);
 	}
 	public String getSender()
 	{

@@ -1,12 +1,13 @@
 package irc;
 
-import irc.*;
+
 import irc.keywords.*;
 import org.jibble.pircbot.IrcException;
 import org.junit.*;
 
 import java.io.IOException;
 
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TestIrcKeywordDetector {
@@ -58,7 +59,7 @@ public class TestIrcKeywordDetector {
 	private void sleep2()
 	{
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -168,5 +169,62 @@ public class TestIrcKeywordDetector {
         assertTrue(actionKeyword.wasPerformed());
         boolean messageReceived = dummy.receivedMessage(client.getName(), Integer.toString(sumand1 + sumand2));
         assertTrue(messageReceived);
+    }
+
+    @Test
+    public void floatTest() throws IOException, IrcException
+    {
+        final String paramString = "1.23";
+        final String key = "float";
+
+
+        Keyword testKeyword = new Keyword(key,Float.class);
+        Action actionKeyword = new NoAction();
+        keywordDetector.addKeyword(testKeyword, actionKeyword);
+
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+        dummy.sendMessage(channel, testKeyword + " " + paramString);
+
+        sleep2();
+        assertTrue(actionKeyword.wasPerformed());
+    }
+
+    @Test
+    public void divisionTest() throws IOException, IrcException
+    {
+        final Float sumand1 = 10.0f;
+        final Float sumand2 = 4.0f;
+        final String paramString = sumand1.toString() + " " + sumand2.toString();
+
+        Keyword testKeyword = new Div();
+        Action actionKeyword = new DivAction(client);
+        keywordDetector.addKeyword(testKeyword, actionKeyword);
+
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+        dummy.sendMessage(channel, testKeyword + " " + paramString);
+
+        sleep2();
+        assertTrue(actionKeyword.wasPerformed());
+        boolean messageReceived = dummy.receivedMessage(client.getName(), Float.toString(sumand1 / sumand2));
+        assertTrue(messageReceived);
+    }
+
+    @Test
+    public void invalidParameterTest() throws IOException, IrcException
+    {
+        final String paramString = "abc";
+        final String key = "float";
+
+
+        Keyword testKeyword = new Keyword(key,Float.class);
+        Action actionKeyword = new NoAction();
+        keywordDetector.addKeyword(testKeyword, actionKeyword);
+
+        DummyClient dummy = DummyClient.addDummy(address, channel);
+        dummy.sendMessage(channel, testKeyword + " " + paramString);
+
+        //for (int i=0; i< 10;i++)
+        sleep2();
+        assertFalse(actionKeyword.wasPerformed());
     }
 }

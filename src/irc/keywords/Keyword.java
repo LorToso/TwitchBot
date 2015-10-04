@@ -1,7 +1,10 @@
 package irc.keywords;
 
+import java.util.Arrays;
+
 public class Keyword {
     public static final String keywordPrefix = "!";
+    private static Class[] validParameterClasses = new Class[]{String.class, Integer.class, Float.class};
 
     private Class[] parameters;
     private String keyword;
@@ -18,9 +21,20 @@ public class Keyword {
         if(keyword.contains("!"))
             throw new IllegalArgumentException("Illegal symbol in keyword.");
 
+        if(!areValidParameterClasses(parameters))
+            throw new IllegalArgumentException("The parameter-list is invalid.");
 
         this.keyword = keywordPrefix + keyword;
         this.parameters = parameters;
+    }
+
+    private boolean areValidParameterClasses(Class[] parametersToCheck) {
+        for(Class parameter : parametersToCheck)
+        {
+            if(!Arrays.asList(validParameterClasses).contains(parameter))
+                return false;
+        }
+        return true;
     }
 
 
@@ -31,7 +45,8 @@ public class Keyword {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
         if (o == null)
             return false;
 

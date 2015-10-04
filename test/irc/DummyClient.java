@@ -1,15 +1,13 @@
 package irc;
 
+import irc.messages.Message;
+import irc.messages.MessageListener;
+import org.jibble.pircbot.IrcException;
+import utilities.RandomString;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import irc.messages.MessageListener;
-import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
-
-import irc.messages.Message;
-import utilities.RandomString;
 
 public class DummyClient extends IrcClient implements MessageListener{
 	
@@ -27,20 +25,6 @@ public class DummyClient extends IrcClient implements MessageListener{
 	{
 		RandomString random = new RandomString(nameLength);
         return "bot_" + random.nextString();
-	}
-	
-	public Message sendDummyMessage(String channel)
-	{
-		final String messageString = "DummyMessage";
-		
-		Message message = new Message();
-		message.channel = channel;
-		message.sender = getName();
-		message.timestamp = System.currentTimeMillis();
-		message.message = messageString;
-		
-		sendMessage(channel, messageString);
-		return message;
 	}
 
 	public static DummyClient addDummy(String address, String channel) throws IOException, IrcException

@@ -22,19 +22,19 @@ public class KeywordMatcher {
     public static Match match(Message message, Keyword keyword)
     {
         if(!hasCorrectKeywordFormat(message))
-            return new NoMatch(keyword,message);
+            return new NoMatch();
 
         String detectedKeyString = getWord(message, 0);
 
         if(!keyword.getKeyString().equals(detectedKeyString))
-            return new NoMatch(keyword,message);
+            return new NoMatch();
 
         List<Object> messageParameters = extractParameters(message,keyword);
 
         if(messageParameters==null)
-            return new NoMatch(keyword,message);
+            return new NoMatch();
 
-        return new Match(keyword, message, messageParameters);
+        return new Match( message, messageParameters);
     }
 
     private static List<Object> extractParameters(Message message, Keyword keyword) {
@@ -55,8 +55,8 @@ public class KeywordMatcher {
                 else if(paramClasses[i] == Integer.class) {
                     allParams.add(Integer.valueOf(words[i+1]));
                 }
-                else if(paramClasses[i] == Double.class) {
-                    allParams.add(Double.valueOf(words[i+1]));
+                else if(paramClasses[i] == Float.class) {
+                    allParams.add(Float.valueOf(words[i+1]));
                 }
             }
         }
