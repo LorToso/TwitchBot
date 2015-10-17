@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jdk.nashorn.internal.runtime.ECMAException;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
@@ -15,14 +14,15 @@ import irc.messages.MessageListener;
 import irc.messages.Notice;
 import irc.messages.NoticeListener;
 
-public class IrcClient extends PircBot{
+public class IrcClient {
+	private IrcClientImpl client;
 	private List<MessageListener> 	messageListeners 	= new ArrayList<>();
 	private List<JoinListener> 		joinListeners 		= new ArrayList<>();
 	private List<NoticeListener> 	noticeListeners 	= new ArrayList<>();
 
 	public IrcClient(String name){
-		setName(name);
-		setLogin(name);
+		client = new IrcClientImpl();
+		client.setLoginName(name);
 	}
 	
 	public void addMessageListener(MessageListener messagee)
@@ -50,8 +50,7 @@ public class IrcClient extends PircBot{
 		noticeListeners.remove(messagee);
 	}
 	
-	final protected void onMessage(String channel, String sender, String login, String hostname, String message)
-	{
+	final protected void onMessage(String channel, String sender, String login, String hostname, String message) {
 		Message packedMessage = new Message();
 		packedMessage.channel = channel;
 		packedMessage.sender = sender;
